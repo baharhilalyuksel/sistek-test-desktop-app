@@ -16,12 +16,15 @@ import javax.swing.JTextField;
 
 public class FrameManager {
 	
-	private JFrame frame;
 	private RestClient restClient;
+	private SerialPortConnection serialPortConnection;
+	
+	private JFrame frame;
 
-	public FrameManager(RestClient restClient) {
+	public FrameManager(RestClient restClient, SerialPortConnection serialPortConnection) {
 		this.frame = new JFrame();
 		this.restClient = restClient;
+		this.serialPortConnection = serialPortConnection;
 	}
 	
 	public void startApplication() {
@@ -81,6 +84,10 @@ public class FrameManager {
 					frame.remove(panel);
 					createBarcodePanel();
 					setFrameProperties();
+					
+					// start serial port connection
+					serialPortConnection.startConnection(restClient);
+					
 				} else {
 					loginUnsuccessful.setVisible(true);
 				}
