@@ -42,6 +42,7 @@ public class RestClient {
 		
 	}
 
+	@SuppressWarnings("deprecation")
 	public String sendBarcode(String barcode) {
 		
 		OkHttpClient client = new OkHttpClient().newBuilder()

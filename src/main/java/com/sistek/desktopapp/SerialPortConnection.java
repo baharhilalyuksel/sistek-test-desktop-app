@@ -3,19 +3,30 @@ package com.sistek.desktopapp;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
-public class SerialPortConnection {
+public class SerialPortConnection implements Runnable {
+	
 	private SerialPort serialPort;
+	private RestClient restClient;
 
-	public void startConnection(RestClient restClient) {
-		serialPort = new SerialPort("COM1");
-		try {
-			serialPort.openPort();// Open port
-			serialPort.setParams(9600, 8, 1, 0);// Set params
-			int mask = SerialPort.MASK_RXCHAR;// Prepare mask
-			serialPort.setEventsMask(mask);// Set mask
-			serialPort.addEventListener(new MySerialPortEventListener(serialPort, restClient));// Add SerialPortEventListener
-		} catch (SerialPortException ex) {
-			System.out.println(ex);
+	public SerialPortConnection(RestClient restClient) {
+		this.restClient = restClient;
+	}
+
+	@Override
+	public void run() {
+		serialPort = new SerialPort("/dev/pts/2");
+		boolean portOpenUnsuccessful = true;
+		while (portOpenUnsuccessful) {
+			try {
+				serialPort.openPort();
+				serialPort.setParams(9600, 8, 1, 0);
+				int mask = SerialPort.MASK_RXCHAR;
+				serialPort.setEventsMask(mask);
+				serialPort.addEventListener(new MySerialPortEventListener(serialPort, restClient));
+				portOpenUnsuccessful = false;
+			} catch (SerialPortException ex) {
+//				System.out.println(ex);
+			}
 		}
 	}
 }

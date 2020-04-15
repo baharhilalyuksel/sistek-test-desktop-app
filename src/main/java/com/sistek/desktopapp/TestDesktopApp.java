@@ -6,8 +6,8 @@ public class TestDesktopApp {
 	
 	public static void main(String s[]) {  
  
-		SerialPortConnection serialPortConnection = new SerialPortConnection();
 		RestClient restClient = new RestClient();
+		SerialPortConnection serialPortConnection = new SerialPortConnection(restClient);
 		FrameManager frameManager = new FrameManager(restClient, serialPortConnection);
 		frameManager.startApplication();
 		

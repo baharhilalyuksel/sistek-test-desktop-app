@@ -16,7 +16,7 @@ public class MySerialPortEventListener implements SerialPortEventListener {
 
 	@Override
 	public void serialEvent(SerialPortEvent event) {
-        if(event.isRXCHAR()){//If data is available
+        if(event.isRXCHAR()){
         	try {
 				String data = serialPort.readString(event.getEventValue());
 				System.out.println(data);

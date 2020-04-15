@@ -72,11 +72,13 @@ public class FrameManager {
         
         final JLabel loginUnsuccessful = new JLabel("Giriş başarısız. Tekrar deneyin.");
         loginUnsuccessful.setVisible(false);
+        loginUnsuccessful.setPreferredSize(new Dimension(350, 30));
         panel.add(loginUnsuccessful);
         
         frame.add(panel); 
                 
         button.addMouseListener(new MouseAdapter() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String loginSuccessful = restClient.loginToWebApp(usernameField.getText(), passwordField.getText());
@@ -85,16 +87,20 @@ public class FrameManager {
 					createBarcodePanel();
 					setFrameProperties();
 					
-					// start serial port connection
-					serialPortConnection.startConnection(restClient);
+					startSerialPortConnection();
 					
 				} else {
 					loginUnsuccessful.setVisible(true);
 				}
 				super.mousePressed(e);
 			}
+
 		});
-		
+	}
+	
+	private void startSerialPortConnection() {
+		Thread serialPortThread = new Thread(serialPortConnection);
+		serialPortThread.start();
 	}
 
 	private void createBarcodePanel() {
@@ -189,7 +195,7 @@ public class FrameManager {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String barcode = barcodeField.getText();
-				if (barcode != null || !barcode.equals("")) {
+				if (!barcode.equals("")) {
 					String success = restClient.sendBarcode(barcode);
 					if (success.equals("SUCCESS")) {
 						successLabel.setVisible(true);
